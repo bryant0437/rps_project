@@ -1,0 +1,286 @@
+;;
+;; Type: StateInit
+;; TLB: _ code:^cell data:^cell = StateInit
+;;
+
+((cell, cell)) $StateInit$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (cell vvv'code, cell vvv'data) = __tact_tuple_destroy_2(v);
+    return (vvv'code, vvv'data);
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters
+;;
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int $bounce, slice $to, int $value, int $mode, cell $body, cell $code, cell $data) inline {
+    return ($bounce, $to, $value, $mode, $body, $code, $data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline {
+    return (true, $to, $value, $mode, $body, null(), null());
+}
+
+;;
+;; Type: Deploy
+;; Header: 0x946a98b6
+;; TLB: deploy#946a98b6 queryId:uint64 = Deploy
+;;
+
+(slice, ((int))) $Deploy$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2490013878);
+    var v'queryId = sc_0~load_uint(64);
+    return (sc_0, (v'queryId));
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v) inline {
+    return $DeployOk$_store(begin_cell(), v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline {
+    return ($queryId);
+}
+
+;;
+;; Type: GameInfo
+;; TLB: _ p1Addr:address p2Addr:address p1Move:uint256 p2Move:uint256 winnerAddr:Maybe address status:uint256 = GameInfo
+;;
+
+builder $GameInfo$_store(builder build_0, (slice, slice, int, int, slice, int) v) inline_ref {
+    var (v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status) = v;
+    build_0 = __tact_store_address(build_0, v'p1Addr);
+    build_0 = __tact_store_address(build_0, v'p2Addr);
+    build_0 = build_0.store_uint(v'p1Move, 256);
+    var build_1 = begin_cell();
+    build_1 = build_1.store_uint(v'p2Move, 256);
+    build_1 = __tact_store_address_opt(build_1, v'winnerAddr);
+    build_1 = build_1.store_uint(v'status, 256);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+cell $GameInfo$_store_cell((slice, slice, int, int, slice, int) v) inline {
+    return $GameInfo$_store(begin_cell(), v).end_cell();
+}
+
+(slice, ((slice, slice, int, int, slice, int))) $GameInfo$_load(slice sc_0) inline_ref {
+    var v'p1Addr = sc_0~__tact_load_address();
+    var v'p2Addr = sc_0~__tact_load_address();
+    var v'p1Move = sc_0~load_uint(256);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'p2Move = sc_1~load_uint(256);
+    var v'winnerAddr = sc_1~__tact_load_address_opt();
+    var v'status = sc_1~load_uint(256);
+    return (sc_0, (v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status));
+}
+
+tuple $GameInfo$_as_optional((slice, slice, int, int, slice, int) v) inline {
+    var (v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status) = v;
+    return __tact_tuple_create_6(v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status);
+}
+
+tuple $GameInfo$_load_opt(cell cl) inline {
+    if (null?(cl)) {
+        return null();
+    }
+    var sc = cl.begin_parse();
+    return $GameInfo$_as_optional(sc~$GameInfo$_load());
+}
+
+_ $GameInfo$_get_p1Addr((slice, slice, int, int, slice, int) v) inline {
+    var (v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status) = v;
+    return v'p1Addr;
+}
+
+_ $GameInfo$_get_p2Addr((slice, slice, int, int, slice, int) v) inline {
+    var (v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status) = v;
+    return v'p2Addr;
+}
+
+_ $GameInfo$_get_p1Move((slice, slice, int, int, slice, int) v) inline {
+    var (v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status) = v;
+    return v'p1Move;
+}
+
+_ $GameInfo$_get_p2Move((slice, slice, int, int, slice, int) v) inline {
+    var (v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status) = v;
+    return v'p2Move;
+}
+
+_ $GameInfo$_get_winnerAddr((slice, slice, int, int, slice, int) v) inline {
+    var (v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status) = v;
+    return v'winnerAddr;
+}
+
+_ $GameInfo$_get_status((slice, slice, int, int, slice, int) v) inline {
+    var (v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status) = v;
+    return v'status;
+}
+
+((slice, slice, int, int, slice, int)) $GameInfo$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (slice vvv'p1Addr, slice vvv'p2Addr, int vvv'p1Move, int vvv'p2Move, slice vvv'winnerAddr, int vvv'status) = __tact_tuple_destroy_6(v);
+    return (vvv'p1Addr, vvv'p2Addr, vvv'p1Move, vvv'p2Move, vvv'winnerAddr, vvv'status);
+}
+
+tuple $GameInfo$_to_tuple(((slice, slice, int, int, slice, int)) v) inline {
+    var (v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status) = v;
+    return __tact_tuple_create_6(v'p1Addr, v'p2Addr, v'p1Move, v'p2Move, v'winnerAddr, v'status);
+}
+
+tuple $GameInfo$_to_opt_tuple(tuple v) inline {
+    if (null?(v)) { return null(); } 
+    return $GameInfo$_to_tuple($GameInfo$_not_null(v)); 
+}
+
+tuple $GameInfo$_to_opt_external(tuple v) inline {
+    var loaded = $GameInfo$_to_opt_tuple(v);
+    if (null?(loaded)) {
+        return null();
+    } else {
+        return (loaded);
+    }
+}
+
+((slice, slice, int, int, slice, int)) $GameInfo$_constructor_p1Addr_p2Addr_p1Move_p2Move_winnerAddr_status(slice $p1Addr, slice $p2Addr, int $p1Move, int $p2Move, slice $winnerAddr, int $status) inline {
+    return ($p1Addr, $p2Addr, $p1Move, $p2Move, $winnerAddr, $status);
+}
+
+;;
+;; Type: AssignPlayerContractAddr
+;; Header: 0x7f576821
+;; TLB: assign_player_contract_addr#7f576821 playerContractAddr:address = AssignPlayerContractAddr
+;;
+
+(slice, ((slice))) $AssignPlayerContractAddr$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2136434721);
+    var v'playerContractAddr = sc_0~__tact_load_address();
+    return (sc_0, (v'playerContractAddr));
+}
+
+;;
+;; Type: NewGame
+;; Header: 0xe06a3a7b
+;; TLB: new_game#e06a3a7b p1Addr:address p2Addr:address = NewGame
+;;
+
+(slice, ((slice, slice))) $NewGame$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3765058171);
+    var v'p1Addr = sc_0~__tact_load_address();
+    var v'p2Addr = sc_0~__tact_load_address();
+    return (sc_0, (v'p1Addr, v'p2Addr));
+}
+
+;;
+;; Type: SelectMove
+;; Header: 0xca4af13e
+;; TLB: select_move#ca4af13e gameId:uint256 playerNo:uint256 move:uint256 = SelectMove
+;;
+
+(slice, ((int, int, int))) $SelectMove$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3393909054);
+    var v'gameId = sc_0~load_uint(256);
+    var v'playerNo = sc_0~load_uint(256);
+    var v'move = sc_0~load_uint(256);
+    return (sc_0, (v'gameId, v'playerNo, v'move));
+}
+
+;;
+;; Type: UpdatePlayerInfo
+;; Header: 0xa4683204
+;; TLB: update_player_info#a4683204 p1Addr:address p2Addr:address winnerAddr:address = UpdatePlayerInfo
+;;
+
+(slice, ((slice, slice, slice))) $UpdatePlayerInfo$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2758291972);
+    var v'p1Addr = sc_0~__tact_load_address();
+    var v'p2Addr = sc_0~__tact_load_address();
+    var v'winnerAddr = sc_0~__tact_load_address();
+    return (sc_0, (v'p1Addr, v'p2Addr, v'winnerAddr));
+}
+
+;;
+;; Type: AddWinLoss
+;; Header: 0x686d81ca
+;; TLB: add_win_loss#686d81ca p1Addr:address p2Addr:address winnerAddr:address = AddWinLoss
+;;
+
+builder $AddWinLoss$_store(builder build_0, (slice, slice, slice) v) inline {
+    var (v'p1Addr, v'p2Addr, v'winnerAddr) = v;
+    build_0 = store_uint(build_0, 1752007114, 32);
+    build_0 = __tact_store_address(build_0, v'p1Addr);
+    build_0 = __tact_store_address(build_0, v'p2Addr);
+    build_0 = __tact_store_address(build_0, v'winnerAddr);
+    return build_0;
+}
+
+cell $AddWinLoss$_store_cell((slice, slice, slice) v) inline {
+    return $AddWinLoss$_store(begin_cell(), v).end_cell();
+}
+
+((slice, slice, slice)) $AddWinLoss$_constructor_p1Addr_p2Addr_winnerAddr(slice $p1Addr, slice $p2Addr, slice $winnerAddr) inline {
+    return ($p1Addr, $p2Addr, $winnerAddr);
+}
+
+;;
+;; Type: Game
+;;
+
+builder $Game$_store(builder build_0, (slice, int, int, cell) v) inline {
+    var (v'playerContractAddr, v'id, v'gameCounter, v'game) = v;
+    build_0 = __tact_store_address(build_0, v'playerContractAddr);
+    build_0 = build_0.store_uint(v'id, 32);
+    build_0 = build_0.store_uint(v'gameCounter, 256);
+    build_0 = build_0.store_dict(v'game);
+    return build_0;
+}
+
+(slice, ((slice, int, int, cell))) $Game$_load(slice sc_0) inline {
+    var v'playerContractAddr = sc_0~__tact_load_address();
+    var v'id = sc_0~load_uint(32);
+    var v'gameCounter = sc_0~load_uint(256);
+    var v'game = sc_0~load_dict();
+    return (sc_0, (v'playerContractAddr, v'id, v'gameCounter, v'game));
+}
+
+(slice, ((int))) $Game$init$_load(slice sc_0) inline {
+    var v'id = sc_0~load_int(257);
+    return (sc_0, (v'id));
+}
+
+(slice, int, int, cell) $Game$_contract_load() impure inline_ref {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$Game$_load();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        (int $id) = $sc~$Game$init$_load();
+        $sc.end_parse();
+        return $Game$_contract_init($id);
+    }
+}
+
+() $Game$_contract_store((slice, int, int, cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = $Game$_store(b, v);
+    set_data(b.end_cell());
+}

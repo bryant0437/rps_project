@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import './App.css'
 import './index.css'
+import { TonConnectButton } from '@tonconnect/ui-react';
+import { useTonConnect } from './hooks/useTonConnect';
+import { CHAIN } from "@tonconnect/protocol";
+import { Address } from '@ton/core';
+import { usePlayerContract } from './hooks/usePlayerContract';
+// import { TonClient } from '@ton/ton';
 
 function App() {
   // gameState
@@ -12,7 +18,13 @@ function App() {
   // 0 = pvp
   // 1 = leaderboard
   // 2 = dashboard
+  // 3 = test function page
   const [page,setPage] = useState(0);
+  // const client = new TonClient({endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC'});
+  // const player_contract_address = 'EQClp65y-fEpisgRisPdWM_dK9vGgblgHlpzcX5OUkP1-KJV135041n';
+  // const player_contract = client.getContractState(player_contract_address)
+
+  const { network, wallet } = useTonConnect();
 
   return (
     <>
@@ -150,12 +162,37 @@ function App() {
             </table>
           </div>
         )}
+        {page==3 && (
+          <div>
+            <TonConnectButton/>
+            <button>abc</button>
+            <button>
+                {network
+                  ? network === CHAIN.MAINNET
+                    ? "mainnet"
+                    : "testnet"
+                    : "N/A"}
+            </button>
+            <div></div>
+            <button>
+              {wallet}
+              {/* {wallet ? Address.parse(wallet as string).toString() :  "Loading"} */}
+              {/* {Address.parse(wallet as string).toString()} */}
+            </button>
+            <div></div>
+            <p>
+              UQDSBL2jM5ck4kDmzCgsF_rb9pOfZ8Av7RD0zWSTR2T_FNaL
+            </p>
+            
+          </div>
+        )}
         
         {/* bottom */}
         <div className='bottom'>
           <button onClick={() => setPage(1)}>leaderboard</button>
           <button onClick={() => setPage(0)}>pvp</button>
           <button onClick={() => setPage(2)}>dashboard</button>
+          <button onClick={() => setPage(3)}>test</button>
         </div>
       </div>
     </>

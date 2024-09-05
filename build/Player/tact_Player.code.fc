@@ -1,0 +1,195 @@
+#pragma version =0.4.4;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "tact_Player.headers.fc";
+#include "tact_Player.stdlib.fc";
+#include "tact_Player.constants.fc";
+#include "tact_Player.storage.fc";
+
+;;
+;; Contract Player functions
+;;
+
+(int, cell) $Player$_contract_init(int $id) impure inline_ref {
+    var (($self'id, $self'player)) = (null(), null());
+    $self'id = $id;
+    $self'player = null();
+    return ($self'id, $self'player);
+}
+
+((int, cell), ()) $Player$_fun_addWin((int, cell) $self, slice $playerAddr) impure inline_ref {
+    var (($self'id, $self'player)) = $self;
+    tuple $info = $Info$_load_opt(__tact_dict_get_slice_cell($self'player, 267, $playerAddr));
+    throw_unless(8754, (~ null?($info)));
+    int $newWins = ($Info$_get_wins($Info$_not_null($info)) + 1);
+    $self'player~__tact_dict_set_slice_cell(267, $playerAddr, $Info$_store_cell($Info$_constructor_wins_losses($newWins, $Info$_get_losses($Info$_not_null($info)))));
+    return (($self'id, $self'player), ());
+}
+
+((int, cell), ()) $Player$_fun_addLoss((int, cell) $self, slice $playerAddr) impure inline_ref {
+    var (($self'id, $self'player)) = $self;
+    tuple $info = $Info$_load_opt(__tact_dict_get_slice_cell($self'player, 267, $playerAddr));
+    throw_unless(8754, (~ null?($info)));
+    int $newLosses = ($Info$_get_losses($Info$_not_null($info)) + 1);
+    $self'player~__tact_dict_set_slice_cell(267, $playerAddr, $Info$_store_cell($Info$_constructor_wins_losses($Info$_get_wins($Info$_not_null($info)), $newLosses)));
+    return (($self'id, $self'player), ());
+}
+
+((int, cell), int) $Player$_fun_id((int, cell) $self) impure inline_ref {
+    var (($self'id, $self'player)) = $self;
+    return (($self'id, $self'player), $self'id);
+}
+
+((int, cell), tuple) $Player$_fun_getPlayerInfo((int, cell) $self, slice $playerAddr) impure inline_ref {
+    var (($self'id, $self'player)) = $self;
+    tuple $info = $Info$_load_opt(__tact_dict_get_slice_cell($self'player, 267, $playerAddr));
+    __tact_debug_address($playerAddr, __gen_slice_string_2d3a9a08bc57aefd78c694d153dade5483d9c3988a6d310b5baa10d9fa4ff047(), "File contracts/player.tact:88:9:");
+    throw_unless(8754, (~ null?($info)));
+    return (($self'id, $self'player), $info);
+}
+
+((int, cell), int) $Player$_fun_getWins((int, cell) $self, slice $playerAddr) impure inline_ref {
+    var (($self'id, $self'player)) = $self;
+    tuple $info = $Info$_load_opt(__tact_dict_get_slice_cell($self'player, 267, $playerAddr));
+    throw_unless(8754, (~ null?($info)));
+    return (($self'id, $self'player), $Info$_get_wins($Info$_not_null($info)));
+}
+
+((int, cell), int) $Player$_fun_getLosses((int, cell) $self, slice $playerAddr) impure inline_ref {
+    var (($self'id, $self'player)) = $self;
+    tuple $info = $Info$_load_opt(__tact_dict_get_slice_cell($self'player, 267, $playerAddr));
+    throw_unless(8754, (~ null?($info)));
+    return (($self'id, $self'player), $Info$_get_losses($Info$_not_null($info)));
+}
+
+;;
+;; Receivers of a Contract Player
+;;
+
+(((int, cell)), ()) $Player$_internal_binary_RegPlayer((int, cell) $self, (slice) $msg) impure inline {
+    var ($self'id, $self'player) = $self;
+    var ($msg'playerAddr) = $msg;
+    throw_unless(25518, null?($Info$_load_opt(__tact_dict_get_slice_cell($self'player, 267, $msg'playerAddr))));
+    $self'player~__tact_dict_set_slice_cell(267, $msg'playerAddr, $Info$_store_cell($Info$_constructor_wins_losses(0, 0)));
+    return (($self'id, $self'player), ());
+}
+
+(((int, cell)), ()) $Player$_internal_binary_AddWinLoss((int, cell) $self, (slice, slice, slice) $msg) impure inline {
+    var ($self'id, $self'player) = $self;
+    var ($msg'p1Addr, $msg'p2Addr, $msg'winnerAddr) = $msg;
+    if (( __tact_slice_eq_bits($msg'winnerAddr, $msg'p1Addr) )) {
+        ($self'id, $self'player)~$Player$_fun_addWin($msg'p1Addr);
+        ($self'id, $self'player)~$Player$_fun_addLoss($msg'p2Addr);
+    } else {
+        ($self'id, $self'player)~$Player$_fun_addWin($msg'p2Addr);
+        ($self'id, $self'player)~$Player$_fun_addLoss($msg'p1Addr);
+    }
+    return (($self'id, $self'player), ());
+}
+
+(((int, cell)), ()) $Player$_internal_binary_Deploy((int, cell) $self, (int) $deploy) impure inline {
+    var ($self'id, $self'player) = $self;
+    var ($deploy'queryId) = $deploy;
+    ($self'id, $self'player)~$Player$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'id, $self'player), ());
+}
+
+;;
+;; Get methods of a Contract Player
+;;
+
+_ %id() method_id(105872) {
+    var self = $Player$_contract_load();
+    var res = self~$Player$_fun_id();
+    return res;
+}
+
+_ %getPlayerInfo(slice $playerAddr) method_id(81923) {
+    slice $playerAddr = __tact_verify_address($playerAddr);
+    var self = $Player$_contract_load();
+    var res = self~$Player$_fun_getPlayerInfo($playerAddr);
+    return $Info$_to_opt_external(res);
+}
+
+_ %getWins(slice $playerAddr) method_id(91642) {
+    slice $playerAddr = __tact_verify_address($playerAddr);
+    var self = $Player$_contract_load();
+    var res = self~$Player$_fun_getWins($playerAddr);
+    return res;
+}
+
+_ %getLosses(slice $playerAddr) method_id(79395) {
+    slice $playerAddr = __tact_verify_address($playerAddr);
+    var self = $Player$_contract_load();
+    var res = self~$Player$_fun_getLosses($playerAddr);
+    return res;
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Player
+;;
+
+((int, cell), int) $Player$_contract_router_internal((int, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive RegPlayer message
+    if (op == 1864455249) {
+        var msg = in_msg~$RegPlayer$_load();
+        self~$Player$_internal_binary_RegPlayer(msg);
+        return (self, true);
+    }
+    
+    ;; Receive AddWinLoss message
+    if (op == 1752007114) {
+        var msg = in_msg~$AddWinLoss$_load();
+        self~$Player$_internal_binary_AddWinLoss(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$Player$_internal_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Player$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Player$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $Player$_contract_store(self);
+}

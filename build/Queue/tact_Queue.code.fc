@@ -1,0 +1,175 @@
+#pragma version =0.4.4;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "tact_Queue.headers.fc";
+#include "tact_Queue.stdlib.fc";
+#include "tact_Queue.constants.fc";
+#include "tact_Queue.storage.fc";
+
+;;
+;; Contract Queue functions
+;;
+
+(int, cell, int, slice) $Queue$_contract_init() impure inline_ref {
+    var (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr)) = (null(), null(), null(), null());
+    $self'counter = 0;
+    $self'queue = null();
+    $self'gameContractAddr = __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c();
+    $self'maxSize = 999;
+    return ($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr);
+}
+
+((int, cell, int, slice), int) $Queue$_fun_isMax((int, cell, int, slice) $self) impure inline_ref {
+    var (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr)) = $self;
+    int $flag = false;
+    if (($self'counter >= $self'maxSize)) {
+        $flag = true;
+    }
+    return (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr), $flag);
+}
+
+((int, cell, int, slice), int) $Queue$_fun_isMatch((int, cell, int, slice) $self) impure inline_ref {
+    var (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr)) = $self;
+    int $flag = false;
+    if ((($self'counter % 2) == 0)) {
+        $flag = true;
+    }
+    return (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr), $flag);
+}
+
+((int, cell, int, slice), ()) $Queue$_fun_StartNewGame((int, cell, int, slice) $self, slice $p1Addr, slice $p2Addr) impure inline_ref {
+    var (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr)) = $self;
+    $global_send($SendParameters$_constructor_to_value_mode_body($self'gameContractAddr, 0, 65, $NewGame$_store_cell($NewGame$_constructor_p1Addr_p2Addr($p1Addr, $p2Addr))));
+    return (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr), ());
+}
+
+((int, cell, int, slice), slice) $Queue$_fun_getGameContractAddr((int, cell, int, slice) $self) impure inline_ref {
+    var (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr)) = $self;
+    return (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr), $self'gameContractAddr);
+}
+
+((int, cell, int, slice), cell) $Queue$_fun_Queue((int, cell, int, slice) $self) impure inline_ref {
+    var (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr)) = $self;
+    return (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr), $self'queue);
+}
+
+;;
+;; Receivers of a Contract Queue
+;;
+
+(((int, cell, int, slice)), ()) $Queue$_internal_binary_AssignGameContractAddr((int, cell, int, slice) $self, (slice) $msg) impure inline {
+    var ($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr) = $self;
+    var ($msg'gameContractAddr) = $msg;
+    $self'gameContractAddr = $msg'gameContractAddr;
+    return (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr), ());
+}
+
+(((int, cell, int, slice)), ()) $Queue$_internal_binary_QueuePlayer((int, cell, int, slice) $self, (slice) $msg) impure inline {
+    var ($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr) = $self;
+    var ($msg'playerAddr) = $msg;
+    $self'queue~__tact_dict_set_int_slice(257, $self'counter, $msg'playerAddr);
+    $self'counter = $self'counter + 1;
+    if (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr)~$Queue$_fun_isMatch()) {
+        __tact_debug_str(__gen_slice_string_2b3b8c96b06cecdcbe51df3b90ed16562ff49217891d4788c9100efd22430915(), __gen_slice_string_ca1fe64589db1b642e86ca212cc8c0a94e4d8a395c99fe12e62669c3612c4ba7(), "File contracts/queue.tact:109:13:");
+        ($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr)~$Queue$_fun_StartNewGame(__tact_dict_get_int_slice($self'queue, 257, ($self'counter - 2)), __tact_dict_get_int_slice($self'queue, 257, ($self'counter - 1)));
+        $self'queue~__tact_dict_delete_int(257, ($self'counter - 2));
+        $self'queue~__tact_dict_delete_int(257, ($self'counter - 1));
+    }
+    if (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr)~$Queue$_fun_isMax()) {
+        $self'queue = null();
+        $self'counter = 0;
+    }
+    return (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr), ());
+}
+
+(((int, cell, int, slice)), ()) $Queue$_internal_binary_Deploy((int, cell, int, slice) $self, (int) $deploy) impure inline {
+    var ($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr) = $self;
+    var ($deploy'queryId) = $deploy;
+    ($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr)~$Queue$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'counter, $self'queue, $self'maxSize, $self'gameContractAddr), ());
+}
+
+;;
+;; Get methods of a Contract Queue
+;;
+
+_ %getGameContractAddr() method_id(103154) {
+    var self = $Queue$_contract_load();
+    var res = self~$Queue$_fun_getGameContractAddr();
+    return res;
+}
+
+_ %Queue() method_id(129639) {
+    var self = $Queue$_contract_load();
+    var res = self~$Queue$_fun_Queue();
+    return res;
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Queue
+;;
+
+((int, cell, int, slice), int) $Queue$_contract_router_internal((int, cell, int, slice) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive AssignGameContractAddr message
+    if (op == 195823741) {
+        var msg = in_msg~$AssignGameContractAddr$_load();
+        self~$Queue$_internal_binary_AssignGameContractAddr(msg);
+        return (self, true);
+    }
+    
+    ;; Receive QueuePlayer message
+    if (op == 1859969918) {
+        var msg = in_msg~$QueuePlayer$_load();
+        self~$Queue$_internal_binary_QueuePlayer(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$Queue$_internal_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Queue$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Queue$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $Queue$_contract_store(self);
+}

@@ -1,0 +1,250 @@
+#pragma version =0.4.4;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "tact_Game.headers.fc";
+#include "tact_Game.stdlib.fc";
+#include "tact_Game.constants.fc";
+#include "tact_Game.storage.fc";
+
+;;
+;; Contract Game functions
+;;
+
+(slice, int, int, cell) $Game$_contract_init(int $id) impure inline_ref {
+    var (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game)) = (null(), null(), null(), null());
+    $self'id = $id;
+    $self'playerContractAddr = __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c();
+    $self'gameCounter = 0;
+    $self'game = null();
+    return ($self'playerContractAddr, $self'id, $self'gameCounter, $self'game);
+}
+
+((slice, int, int, cell), slice) $Game$_fun_findWinner((slice, int, int, cell) $self, slice $p1Addr, slice $p2Addr, int $p1Move, int $p2Move) impure inline_ref {
+    var (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game)) = $self;
+    slice $winnerAddr = __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c();
+    if (($p1Move != $p2Move)) {
+        if (( (($p1Move == 1)) ? (($p2Move == 3)) : (false) )) {
+            $winnerAddr = $p1Addr;
+        } elseif (( (($p1Move == 2)) ? (($p2Move == 1)) : (false) )) {
+            $winnerAddr = $p1Addr;
+        } elseif (( (($p1Move == 3)) ? (($p2Move == 2)) : (false) )) {
+            $winnerAddr = $p1Addr;
+        } elseif (( (($p2Move == 1)) ? (($p1Move == 3)) : (false) )) {
+            $winnerAddr = $p2Addr;
+        } elseif (( (($p2Move == 2)) ? (($p1Move == 1)) : (false) )) {
+            $winnerAddr = $p2Addr;
+        } elseif (( (($p2Move == 3)) ? (($p1Move == 2)) : (false) )) {
+            $winnerAddr = $p2Addr;
+        }
+    }
+    return (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game), $winnerAddr);
+}
+
+((slice, int, int, cell), int) $Game$_fun_id((slice, int, int, cell) $self) impure inline_ref {
+    var (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game)) = $self;
+    return (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game), $self'id);
+}
+
+((slice, int, int, cell), int) $Game$_fun_counter((slice, int, int, cell) $self) impure inline_ref {
+    var (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game)) = $self;
+    return (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game), $self'gameCounter);
+}
+
+((slice, int, int, cell), slice) $Game$_fun_getplayerContractAddr((slice, int, int, cell) $self) impure inline_ref {
+    var (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game)) = $self;
+    return (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game), $self'playerContractAddr);
+}
+
+((slice, int, int, cell), tuple) $Game$_fun_getGameInfo((slice, int, int, cell) $self, int $gameId) impure inline_ref {
+    var (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game)) = $self;
+    throw_unless(13863, ($gameId < $self'gameCounter));
+    tuple $game = $GameInfo$_load_opt(__tact_dict_get_int_cell($self'game, 257, $gameId));
+    tuple $newGame = $game;
+    if (($GameInfo$_get_status($GameInfo$_not_null($game)) == 2)) {
+        $newGame = $GameInfo$_as_optional($GameInfo$_constructor_p1Addr_p2Addr_p1Move_p2Move_winnerAddr_status($GameInfo$_get_p1Addr($GameInfo$_not_null($game)), $GameInfo$_get_p2Addr($GameInfo$_not_null($game)), $GameInfo$_get_p1Move($GameInfo$_not_null($game)), $GameInfo$_get_p2Move($GameInfo$_not_null($game)), $GameInfo$_get_winnerAddr($GameInfo$_not_null($game)), $GameInfo$_get_status($GameInfo$_not_null($game))));
+    } else {
+        $newGame = $GameInfo$_as_optional($GameInfo$_constructor_p1Addr_p2Addr_p1Move_p2Move_winnerAddr_status($GameInfo$_get_p1Addr($GameInfo$_not_null($game)), $GameInfo$_get_p2Addr($GameInfo$_not_null($game)), 4, 4, $GameInfo$_get_winnerAddr($GameInfo$_not_null($game)), $GameInfo$_get_status($GameInfo$_not_null($game))));
+    }
+    return (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game), $newGame);
+}
+
+;;
+;; Receivers of a Contract Game
+;;
+
+(((slice, int, int, cell)), ()) $Game$_internal_binary_AssignPlayerContractAddr((slice, int, int, cell) $self, (slice) $msg) impure inline {
+    var ($self'playerContractAddr, $self'id, $self'gameCounter, $self'game) = $self;
+    var ($msg'playerContractAddr) = $msg;
+    $self'playerContractAddr = $msg'playerContractAddr;
+    return (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game), ());
+}
+
+(((slice, int, int, cell)), ()) $Game$_internal_binary_NewGame((slice, int, int, cell) $self, (slice, slice) $msg) impure inline {
+    var ($self'playerContractAddr, $self'id, $self'gameCounter, $self'game) = $self;
+    var ($msg'p1Addr, $msg'p2Addr) = $msg;
+    $self'game~__tact_dict_set_int_cell(257, $self'gameCounter, $GameInfo$_store_cell($GameInfo$_constructor_p1Addr_p2Addr_p1Move_p2Move_winnerAddr_status($msg'p1Addr, $msg'p2Addr, 0, 0, null(), 0)));
+    $self'gameCounter = $self'gameCounter + 1;
+    return (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game), ());
+}
+
+(((slice, int, int, cell)), ()) $Game$_internal_binary_SelectMove((slice, int, int, cell) $self, (int, int, int) $msg) impure inline {
+    var ($self'playerContractAddr, $self'id, $self'gameCounter, $self'game) = $self;
+    var ($msg'gameId, $msg'playerNo, $msg'move) = $msg;
+    throw_unless(49762, ($msg'gameId < $self'gameCounter));
+    if (($msg'playerNo == 1)) {
+        tuple $temp = $GameInfo$_load_opt(__tact_dict_get_int_cell($self'game, 257, $msg'gameId));
+        throw_unless(18791, (~ null?($temp)));
+        throw_unless(27208, ($GameInfo$_get_status($GameInfo$_not_null($temp)) < 2));
+        throw_unless(27305, ($GameInfo$_get_p1Move($GameInfo$_not_null($temp)) == 0));
+        throw_unless(59842, ( (($msg'move > 0)) ? (($msg'move <= 3)) : (false) ));
+        int $newStatus = $GameInfo$_get_status($GameInfo$_not_null($temp));
+        $newStatus = $newStatus + 1;
+        slice $winnerAddr = $GameInfo$_get_winnerAddr($GameInfo$_not_null($temp));
+        if (($newStatus == 2)) {
+            $winnerAddr = ($self'playerContractAddr, $self'id, $self'gameCounter, $self'game)~$Game$_fun_findWinner($GameInfo$_get_p1Addr($GameInfo$_not_null($temp)), $GameInfo$_get_p2Addr($GameInfo$_not_null($temp)), $msg'move, $GameInfo$_get_p2Move($GameInfo$_not_null($temp)));
+        }
+        $self'game~__tact_dict_set_int_cell(257, $msg'gameId, $GameInfo$_store_cell($GameInfo$_constructor_p1Addr_p2Addr_p1Move_p2Move_winnerAddr_status($GameInfo$_get_p1Addr($GameInfo$_not_null($temp)), $GameInfo$_get_p2Addr($GameInfo$_not_null($temp)), $msg'move, $GameInfo$_get_p2Move($GameInfo$_not_null($temp)), $winnerAddr, $newStatus)));
+    } elseif (($msg'playerNo == 2)) {
+        tuple $temp = $GameInfo$_load_opt(__tact_dict_get_int_cell($self'game, 257, $msg'gameId));
+        throw_unless(7608, (~ null?($temp)));
+        throw_unless(27208, ($GameInfo$_get_status($GameInfo$_not_null($temp)) < 2));
+        throw_unless(27305, ($GameInfo$_get_p2Move($GameInfo$_not_null($temp)) == 0));
+        throw_unless(59842, ( (($msg'move > 0)) ? (($msg'move <= 3)) : (false) ));
+        int $newStatus = $GameInfo$_get_status($GameInfo$_not_null($temp));
+        $newStatus = $newStatus + 1;
+        slice $winnerAddr = $GameInfo$_get_winnerAddr($GameInfo$_not_null($temp));
+        if (($newStatus == 2)) {
+            $winnerAddr = ($self'playerContractAddr, $self'id, $self'gameCounter, $self'game)~$Game$_fun_findWinner($GameInfo$_get_p1Addr($GameInfo$_not_null($temp)), $GameInfo$_get_p2Addr($GameInfo$_not_null($temp)), $GameInfo$_get_p1Move($GameInfo$_not_null($temp)), $msg'move);
+        }
+        $self'game~__tact_dict_set_int_cell(257, $msg'gameId, $GameInfo$_store_cell($GameInfo$_constructor_p1Addr_p2Addr_p1Move_p2Move_winnerAddr_status($GameInfo$_get_p1Addr($GameInfo$_not_null($temp)), $GameInfo$_get_p2Addr($GameInfo$_not_null($temp)), $GameInfo$_get_p1Move($GameInfo$_not_null($temp)), $msg'move, $winnerAddr, $newStatus)));
+    } else {
+        __tact_debug_str(__gen_slice_string_2468978ec379cb92c5f66b24bbdada05bc2b0cf206ee4ffd1aab65c7a1134845(), __gen_slice_string_e40d7c8852a8c486cdcebc60cec7e176dcb2d9d0dadb5e35c4a542b98c869cec(), "File contracts/game.tact:275:13:");
+    }
+    return (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game), ());
+}
+
+(((slice, int, int, cell)), ()) $Game$_internal_binary_UpdatePlayerInfo((slice, int, int, cell) $self, (slice, slice, slice) $msg) impure inline {
+    var ($self'playerContractAddr, $self'id, $self'gameCounter, $self'game) = $self;
+    var ($msg'p1Addr, $msg'p2Addr, $msg'winnerAddr) = $msg;
+    $global_send($SendParameters$_constructor_to_value_mode_body($self'playerContractAddr, 0, 65, $AddWinLoss$_store_cell($AddWinLoss$_constructor_p1Addr_p2Addr_winnerAddr($msg'p1Addr, $msg'p2Addr, $msg'winnerAddr))));
+    return (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game), ());
+}
+
+(((slice, int, int, cell)), ()) $Game$_internal_binary_Deploy((slice, int, int, cell) $self, (int) $deploy) impure inline {
+    var ($self'playerContractAddr, $self'id, $self'gameCounter, $self'game) = $self;
+    var ($deploy'queryId) = $deploy;
+    ($self'playerContractAddr, $self'id, $self'gameCounter, $self'game)~$Game$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'playerContractAddr, $self'id, $self'gameCounter, $self'game), ());
+}
+
+;;
+;; Get methods of a Contract Game
+;;
+
+_ %id() method_id(105872) {
+    var self = $Game$_contract_load();
+    var res = self~$Game$_fun_id();
+    return res;
+}
+
+_ %counter() method_id(104984) {
+    var self = $Game$_contract_load();
+    var res = self~$Game$_fun_counter();
+    return res;
+}
+
+_ %getplayerContractAddr() method_id(128153) {
+    var self = $Game$_contract_load();
+    var res = self~$Game$_fun_getplayerContractAddr();
+    return res;
+}
+
+_ %getGameInfo(int $gameId) method_id(84326) {
+    int $gameId = $gameId;
+    var self = $Game$_contract_load();
+    var res = self~$Game$_fun_getGameInfo($gameId);
+    return $GameInfo$_to_opt_external(res);
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Game
+;;
+
+((slice, int, int, cell), int) $Game$_contract_router_internal((slice, int, int, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive AssignPlayerContractAddr message
+    if (op == 2136434721) {
+        var msg = in_msg~$AssignPlayerContractAddr$_load();
+        self~$Game$_internal_binary_AssignPlayerContractAddr(msg);
+        return (self, true);
+    }
+    
+    ;; Receive NewGame message
+    if (op == 3765058171) {
+        var msg = in_msg~$NewGame$_load();
+        self~$Game$_internal_binary_NewGame(msg);
+        return (self, true);
+    }
+    
+    ;; Receive SelectMove message
+    if (op == 3393909054) {
+        var msg = in_msg~$SelectMove$_load();
+        self~$Game$_internal_binary_SelectMove(msg);
+        return (self, true);
+    }
+    
+    ;; Receive UpdatePlayerInfo message
+    if (op == 2758291972) {
+        var msg = in_msg~$UpdatePlayerInfo$_load();
+        self~$Game$_internal_binary_UpdatePlayerInfo(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$Game$_internal_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Game$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Game$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $Game$_contract_store(self);
+}
