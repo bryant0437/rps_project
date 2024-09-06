@@ -8,6 +8,10 @@ import { Address } from '@ton/core';
 import { usePlayerContract } from './hooks/usePlayerContract';
 // import { TonClient } from '@ton/ton';
 
+// shadcn/ui
+import { Button } from './components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './components/ui/card';
+
 function App() {
   // gameState
   // 0 = free
@@ -19,7 +23,7 @@ function App() {
   // 1 = leaderboard
   // 2 = dashboard
   // 3 = test function page
-  const [page,setPage] = useState(0);
+  const [page, setPage] = useState(0);
   // const client = new TonClient({endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC'});
   // const player_contract_address = 'EQClp65y-fEpisgRisPdWM_dK9vGgblgHlpzcX5OUkP1-KJV135041n';
   // const player_contract = client.getContractState(player_contract_address)
@@ -31,10 +35,24 @@ function App() {
       {/* pvp page */}
       <div>
         {/* top */}
+        <Card>
+          <CardHeader>
+            <CardTitle>shadcn/ui</CardTitle>
+            <CardDescription>shadcn/ui is dope!</CardDescription>
+          </CardHeader>
+          <CardContent>
+          <div>
+            <Button>shadcn/ui button</Button>
+          </div>
+          </CardContent>
+          <CardFooter>
+            <p>a normal footer here.</p>
+          </CardFooter>
+        </Card>
         <div className='top'>this is game name</div>
-        
+
         {/* main screen */}
-        {page==0 && gameState==0 && (
+        {page == 0 && gameState == 0 && (
           <div>
             <div className='pvp_address'>address</div>
             <div className='pvp_team'>selected team</div>
@@ -43,25 +61,25 @@ function App() {
             <button onClick={() => setGameState(2)}>set state to 2</button>
           </div>
         )}
-        {page==0 && gameState==1 && (
+        {page == 0 && gameState == 1 && (
           <div>
             <div className='pvp_address'>address</div>
             <div className='pvp_team'>selected team</div>
             <div>gameState 1</div>
             <button onClick={() => setGameState(0)}>set state to 0</button>
             <button onClick={() => setGameState(2)}>set state to 2</button>
-        </div>
+          </div>
         )}
-        {page==0 && gameState==2 && (
+        {page == 0 && gameState == 2 && (
           <div>
             <div className='pvp_address'>address</div>
             <div className='pvp_team'>selected team</div>
             <div>gameState 2</div>
             <button onClick={() => setGameState(0)}>set state to 0</button>
             <button onClick={() => setGameState(1)}>set state to 1</button>
-        </div>
+          </div>
         )}
-        {page==1 && (
+        {page == 1 && (
           <div>
             <div className='leaderboard'>leaderboard</div>
             <table>
@@ -116,7 +134,7 @@ function App() {
             </table>
           </div>
         )}
-        {page==2 && (
+        {page == 2 && (
           <div>
             {/* <div>dashboard</div> */}
             <table>
@@ -162,16 +180,16 @@ function App() {
             </table>
           </div>
         )}
-        {page==3 && (
+        {page == 3 && (
           <div>
-            <TonConnectButton/>
+            <TonConnectButton />
             <button>abc</button>
             <button>
-                {network
-                  ? network === CHAIN.MAINNET
-                    ? "mainnet"
-                    : "testnet"
-                    : "N/A"}
+              {network
+                ? network === CHAIN.MAINNET
+                  ? "mainnet"
+                  : "testnet"
+                : "N/A"}
             </button>
             <div></div>
             <button>
@@ -183,10 +201,10 @@ function App() {
             <p>
               UQDSBL2jM5ck4kDmzCgsF_rb9pOfZ8Av7RD0zWSTR2T_FNaL
             </p>
-            
+
           </div>
         )}
-        
+
         {/* bottom */}
         <div className='bottom'>
           <button onClick={() => setPage(1)}>leaderboard</button>
