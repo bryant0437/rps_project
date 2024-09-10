@@ -3,8 +3,8 @@ import { useTonClient } from "./useTonClient";
 import { Player } from "../wrappers/player";
 import { Address, OpenedContract, address } from "@ton/core";
 import { useTonConnect } from "./useTonConnect";
-import { Queue } from "build/Queue/tact_Queue";
-import { Game } from "build/Game/tact_Game";
+import { Queue } from "../wrappers/queue";
+import { Game } from "../wrappers/game";
 
 
 export function usePlayerContract() {

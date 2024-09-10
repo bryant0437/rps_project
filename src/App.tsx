@@ -28,6 +28,7 @@ function App() {
   // const player_contract = client.getContractState(player_contract_address)
 
   const { network, wallet } = useTonConnect();
+  const { p_wins } = usePlayerContract();
 
   return (
     <>
