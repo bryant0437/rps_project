@@ -6,7 +6,6 @@ import { useTonConnect } from './hooks/useTonConnect';
 import { CHAIN } from "@tonconnect/protocol";
 import { Address } from '@ton/core';
 import { usePlayerContract } from './hooks/usePlayerContract';
-// import { TonClient } from '@ton/ton';
 
 // shadcn/ui
 import { Button } from './components/ui/button';
@@ -49,12 +48,15 @@ function App() {
             <p>a normal footer here.</p>
           </CardFooter>
         </Card>
-        <div className='top'>this is game name</div>
+        <div className='top'>RPS</div>
 
         {/* main screen */}
         {page == 0 && gameState == 0 && (
           <div>
-            <div className='pvp_address'>address</div>
+            <div className='pvp_address'>
+              <TonConnectButton />
+            </div>
+            {/* <div className='pvp_address'>{wallet}</div> */}
             <div className='pvp_team'>selected team</div>
             <div>gameState 0</div>
             <button onClick={() => setGameState(1)}>set state to 1</button>
@@ -63,7 +65,9 @@ function App() {
         )}
         {page == 0 && gameState == 1 && (
           <div>
-            <div className='pvp_address'>address</div>
+            <div className='pvp_address'>
+              <TonConnectButton />
+            </div>
             <div className='pvp_team'>selected team</div>
             <div>gameState 1</div>
             <button onClick={() => setGameState(0)}>set state to 0</button>
@@ -72,7 +76,9 @@ function App() {
         )}
         {page == 0 && gameState == 2 && (
           <div>
-            <div className='pvp_address'>address</div>
+            <div className='pvp_address'>
+              <TonConnectButton />
+            </div>
             <div className='pvp_team'>selected team</div>
             <div>gameState 2</div>
             <button onClick={() => setGameState(0)}>set state to 0</button>
@@ -198,9 +204,9 @@ function App() {
               {/* {Address.parse(wallet as string).toString()} */}
             </button>
             <div></div>
-            <p>
-              UQDSBL2jM5ck4kDmzCgsF_rb9pOfZ8Av7RD0zWSTR2T_FNaL
-            </p>
+            <button>
+              {/* {id ? id : "Loading..."} */}
+            </button>
 
           </div>
         )}
