@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import './index.css'
-import { TonConnectButton } from '@tonconnect/ui-react';
+import { TonConnectButton, useTonAddress } from '@tonconnect/ui-react';
 import { useTonConnect } from './hooks/useTonConnect';
 import { CHAIN } from "@tonconnect/protocol";
 import { Address } from '@ton/core';
@@ -28,7 +28,34 @@ function App() {
   // const player_contract = client.getContractState(player_contract_address)
 
   const { network, wallet } = useTonConnect();
-  const { p_wins } = usePlayerContract();
+
+  const [team, setTeam] = useState("Not Selected Yet");
+  const [ap_wins, setAP_wins] = useState("");
+  const [ap_losses, setAP_losses] = useState("");
+  const [ap_total, setAP_total] = useState(0n);
+  const [num_total, setNUM_total] = useState("");
+
+  const showAdd = useTonAddress();
+
+  const { reg_player, q_queue, g_move } = usePlayerContract();
+
+  // const { p_wins } = usePlayerContract();
+  let p_wins = usePlayerContract();
+  p_wins.then((result) => {
+    if(ap_wins!=result.p_wins.toString()){
+      setAP_wins(result.p_wins.toString());
+      setAP_total(ap_total+result.p_wins);
+      setNUM_total(ap_total.toString());
+    }
+  })
+  let p_losses = usePlayerContract();
+  p_losses.then((result) => {
+    if(ap_losses!=result.p_losses.toString()){
+      setAP_losses(result.p_losses.toString());
+      setAP_total(ap_total+result.p_losses);
+      setNUM_total(ap_total.toString());
+    }
+  })
 
   return (
     <>
@@ -58,8 +85,15 @@ function App() {
               <TonConnectButton />
             </div>
             {/* <div className='pvp_address'>{wallet}</div> */}
-            <div className='pvp_team'>selected team</div>
+            <div className='pvp_team'>{team}</div>
             <div>gameState 0</div>
+            <button>new game</button>
+            <div></div>
+            <p>select your team</p>
+            <button onClick={() => setTeam("Team A")}>a</button>
+            <button onClick={() => setTeam("Team B")}>b</button>
+            <button onClick={() => setTeam("Team C")}>c</button>
+            <div></div>
             <button onClick={() => setGameState(1)}>set state to 1</button>
             <button onClick={() => setGameState(2)}>set state to 2</button>
           </div>
@@ -146,12 +180,14 @@ function App() {
             {/* <div>dashboard</div> */}
             <table>
               <tr className='dashboard_address'>
-                <td width="70%">Address</td>
+                <td width="70%"><TonConnectButton /></td>
                 <td>No. of Games</td>
+                <td>{num_total}</td>
               </tr>
               <tr className='dashboard_team'>
-                <td width="78%">Selected Team</td>
+                <td width="78%">{team}</td>
                 <td>Win Rate</td>
+                <td>{ap_wins} / {ap_losses}</td>
               </tr>
             </table>
             <div className='dashboard_history'>History</div>
@@ -191,6 +227,7 @@ function App() {
           <div>
             <TonConnectButton />
             <button>abc</button>
+            <button onClick={reg_player}>Reg</button>
             <button>
               {network
                 ? network === CHAIN.MAINNET
@@ -205,9 +242,20 @@ function App() {
               {/* {Address.parse(wallet as string).toString()} */}
             </button>
             <div></div>
-            <button>
-              {/* {id ? id : "Loading..."} */}
-            </button>
+            <table>
+              <tr>
+                <td>wins</td>
+                <td>{ap_wins}</td>
+              </tr>
+              <tr>
+                <td>losses</td>
+                <td>{ap_losses}</td>
+              </tr>
+              <tr>
+                <td>address</td>
+                <td>{showAdd}</td>
+              </tr>
+            </table>
 
           </div>
         )}
